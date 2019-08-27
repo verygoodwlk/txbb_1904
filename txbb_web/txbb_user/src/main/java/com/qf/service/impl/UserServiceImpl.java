@@ -38,4 +38,42 @@ public class UserServiceImpl implements IUserService {
         //保存到数据库
         return userMapper.insert(user);
     }
+
+    /**
+     * 登录的业务
+     * @param user
+     * @return
+     */
+    @Override
+    public User login(User user) {
+
+        //通过用户名查询用户信息
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("username", user.getUsername());
+        User userInfo = userMapper.selectOne(queryWrapper);
+
+        //验证密码是否正确
+        if(userInfo != null && user.getPassword().equals(userInfo.getPassword())){
+            //登录成功
+            return userInfo;
+        }
+        return null;
+    }
+
+    /**
+     * 更新用户头像
+     * @param img
+     * @param imgCrm
+     * @param uid
+     * @return
+     */
+    @Override
+    public int updateImg(String img, String imgCrm, Integer uid) {
+
+        User user = userMapper.selectById(uid);
+        user.setHeader(img);
+        user.setHeaderCrm(imgCrm);
+
+        return userMapper.updateById(user);
+    }
 }

@@ -40,4 +40,21 @@ public class UserController {
 
         return ResultData.createFailResultData(ResultCode.SERVER_ERROR, "服务器异常，请扫后再试！");
     }
+
+    /**
+     * 用户登录
+     * @param user
+     * @return
+     */
+    @RequestMapping("/login")
+    public ResultData<User> login(User user){
+
+        User userLogin = userService.login(user);
+        if(userLogin != null){
+            userLogin.setPassword(null);
+            return ResultData.createSuccResultData(userLogin);
+        }
+
+        return ResultData.createFailResultData(ResultCode.LOGIN_ERROR, "用户名或者密码错误！");
+    }
 }

@@ -7,16 +7,13 @@
         <artifactId>txbb_1904</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-    <artifactId>txbb_gateway</artifactId>
+    <artifactId>txbb_config_server</artifactId>
+
 
     <dependencies>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-gateway</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+            <artifactId>spring-cloud-config-server</artifactId>
         </dependency>
 
         <dependency>
@@ -24,12 +21,6 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-config-client</artifactId>
-        </dependency>
     </dependencies>
-
 
 </project>

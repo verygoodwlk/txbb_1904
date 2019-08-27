@@ -1,0 +1,14 @@
+server:
+  port: 20000
+spring:
+  application:
+    name: config-server
+  cloud:
+    config:
+      server:
+        #本地管理配置文件
+        native:
+          search-locations: classpath:config
+  #基于本地的方式管理配置文件
+  profiles:
+    active: native

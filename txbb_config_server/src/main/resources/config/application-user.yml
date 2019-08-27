@@ -1,0 +1,15 @@
+server:
+  port: 9000
+spring:
+  application:
+    name: txbb-user
+fdfs:
+  tracker-list:
+    - 120.78.77.179:22122
+  so-timeout: 5000
+  connect-timeout: 5000
+  pool:
+    jmx-enabled: false
+  thumb-image:
+    width: 80
+    height: 80

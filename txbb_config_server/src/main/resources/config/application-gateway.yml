@@ -1,0 +1,13 @@
+server:
+  port: 10086
+spring:
+  application:
+    name: txbb-gateway
+  cloud:
+    gateway:
+      routes:
+      - id: web-user
+        uri: lb://TXBB-USER
+        predicates:
+        - Path=/user/**,/res/**
+
