@@ -7,6 +7,7 @@
         <module>txbb_entity</module>
         <module>txbb_commons</module>
         <module>txbb_web</module>
+        <module>txbb_service_api</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>

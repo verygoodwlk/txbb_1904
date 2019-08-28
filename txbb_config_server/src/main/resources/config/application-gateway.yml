@@ -9,5 +9,8 @@ spring:
       - id: web-user
         uri: lb://TXBB-USER
         predicates:
-        - Path=/user/**,/res/**
-
+          - Path=/user/**,/res/**
+      - id: web-friends
+        uri: lb://TXBB-FRIEND
+        predicates:
+          - Path=/request/**,/friends/**

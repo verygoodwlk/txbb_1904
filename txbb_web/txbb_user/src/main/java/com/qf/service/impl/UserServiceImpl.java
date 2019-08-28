@@ -1,11 +1,19 @@
 package com.qf.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.github.tobato.fastdfs.domain.StorePath;
+import com.github.tobato.fastdfs.service.FastFileStorageClient;
 import com.qf.dao.UserMapper;
 import com.qf.entity.User;
 import com.qf.service.IUserService;
+import com.qf.util.PinyinUtils;
+import com.qf.util.QRCodeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 
 /**
  * @version 1.0
@@ -17,6 +25,9 @@ public class UserServiceImpl implements IUserService {
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private FastFileStorageClient fastFileStorageClient;
 
     //用户注册 -1表示用户名存在
     @Override
@@ -32,8 +43,27 @@ public class UserServiceImpl implements IUserService {
             return -1;
         }
 
-        //生成昵称的拼音
-        //生成用户的二维码名片
+        //TODO 生成昵称的拼音
+        user.setPinyin(PinyinUtils.string2Pinyin(user.getNickname()));
+        //TODO 生成用户的二维码名片 二维码是什么？
+        File file = null;
+        try {
+            file = File.createTempFile("qrcode_" + user.getUsername(), "png");
+            //生成二维码，放入临时文件
+            QRCodeUtils.createQRCode(file, "txbb:" + user.getUsername());
+            //将临时文件上传到FastDFS
+            StorePath path = fastFileStorageClient.uploadImageAndCrtThumbImage(new FileInputStream(file), file.length(), "png", null);
+            String fullPath = path.getFullPath();
+
+            //放入user
+            user.setQrcode(fullPath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if(file != null){
+                file.delete();
+            }
+        }
 
         //保存到数据库
         return userMapper.insert(user);
@@ -75,5 +105,20 @@ public class UserServiceImpl implements IUserService {
         user.setHeaderCrm(imgCrm);
 
         return userMapper.updateById(user);
+    }
+
+    @Override
+    public User queryByUserName(String username) {
+        //判断用户名是否存在
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("username", username);
+        User user = userMapper.selectOne(queryWrapper);
+        return user;
+    }
+
+    @Override
+    public User queryByUid(Integer uid) {
+        User user = userMapper.selectById(uid);
+        return user;
     }
 }

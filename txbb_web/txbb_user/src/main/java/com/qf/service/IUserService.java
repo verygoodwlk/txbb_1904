@@ -9,4 +9,8 @@ public interface IUserService {
     User login(User user);
 
     int updateImg(String img, String imgCrm, Integer uid);
+
+    User queryByUserName(String username);
+
+    User queryByUid(Integer uid);
 }

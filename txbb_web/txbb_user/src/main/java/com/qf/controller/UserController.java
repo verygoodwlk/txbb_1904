@@ -57,4 +57,31 @@ public class UserController {
 
         return ResultData.createFailResultData(ResultCode.LOGIN_ERROR, "用户名或者密码错误！");
     }
+
+    /**
+     * 根据用户名搜索好友信息
+     * @param fusername
+     * @return
+     */
+    @RequestMapping("/queryByUserName")
+    public ResultData<User> queryByUserName(String fusername){
+
+        User user = userService.queryByUserName(fusername);
+        if(user != null){
+            user.setPassword(null);
+            return ResultData.createSuccResultData(user);
+        }
+
+        return ResultData.createFailResultData(ResultCode.SEARCH_EMPTRY, "用户不存在！");
+    }
+
+    /**
+     * 查询用户信息
+     * @param uid
+     * @return
+     */
+    @RequestMapping("/queryUser")
+    public User queryUserByUid(Integer uid){
+        return userService.queryByUid(uid);
+    }
 }
