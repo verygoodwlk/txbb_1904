@@ -1,6 +1,7 @@
 package com.qf.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -26,4 +27,7 @@ public class Friends implements Serializable {
     private Date createTime;
     private Integer status;
     private String beizhu;
+
+    @TableField(exist = false)
+    private User friendUser;
 }
