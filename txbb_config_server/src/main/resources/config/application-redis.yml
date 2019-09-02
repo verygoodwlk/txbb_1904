@@ -1,0 +1,4 @@
+spring:
+  redis:
+    host: 120.78.77.179
+    password: root

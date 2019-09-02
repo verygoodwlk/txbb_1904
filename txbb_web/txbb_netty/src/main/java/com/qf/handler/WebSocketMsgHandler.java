@@ -2,9 +2,7 @@ package com.qf.handler;
 
 import com.alibaba.fastjson.JSON;
 import com.qf.channel.ChannelGroup;
-import com.qf.msg.ConnMsg;
-import com.qf.msg.HeartMsg;
-import com.qf.msg.NettyMsg;
+import com.qf.msg.*;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
@@ -42,6 +40,15 @@ public class WebSocketMsgHandler extends SimpleChannelInboundHandler<TextWebSock
             case 2:
                 //心跳消息
                 nettyMsg = JSON.parseObject(msg, HeartMsg.class);
+                break;
+            case 6:
+            case 7:
+                //当前正在输入或者停止输入
+                nettyMsg = JSON.parseObject(msg, EditMsg.class);
+                break;
+            case 3:
+                //当前是单聊消息
+                nettyMsg = JSON.parseObject(msg, ChatMsg.class);
                 break;
         }
 

@@ -3,8 +3,11 @@ package com.qf.controller;
 import com.qf.entity.ResultCode;
 import com.qf.entity.ResultData;
 import com.qf.entity.User;
+import com.qf.msg.ShutDownMsg;
 import com.qf.service.IUserService;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,6 +22,12 @@ public class UserController {
 
     @Autowired
     private IUserService userService;
+
+    @Autowired
+    private StringRedisTemplate redisTemplate;
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
 
     /**
      * 用户注册
@@ -47,11 +56,23 @@ public class UserController {
      * @return
      */
     @RequestMapping("/login")
-    public ResultData<User> login(User user){
+    public ResultData<User> login(User user, String did){
 
         User userLogin = userService.login(user);
         if(userLogin != null){
             userLogin.setPassword(null);
+
+            //说明登录成功
+            //将用户和设备关系保存到redis中
+            String oldDeviceId = redisTemplate.opsForValue().get(userLogin.getId().toString());
+            if(oldDeviceId != null && !oldDeviceId.equals(did)){
+                //将oldDeviceId挤下线
+                ShutDownMsg shutDownMsg = new ShutDownMsg();
+                shutDownMsg.setDeviceid(oldDeviceId);
+                rabbitTemplate.convertAndSend("chat_exchange", "", shutDownMsg);
+            }
+            redisTemplate.opsForValue().set(userLogin.getId().toString(), did);
+
             return ResultData.createSuccResultData(userLogin);
         }
 
