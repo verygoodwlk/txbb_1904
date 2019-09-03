@@ -2,6 +2,7 @@ package com.qf.controller;
 
 import com.github.tobato.fastdfs.domain.StorePath;
 import com.github.tobato.fastdfs.service.FastFileStorageClient;
+import com.qf.entity.ResultCode;
 import com.qf.entity.ResultData;
 import com.qf.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,5 +63,29 @@ public class ResController {
 
 
         return ResultData.createSuccResultData(map);
+    }
+
+    /**
+     * 上传音频文件
+     * @return
+     */
+    @RequestMapping("/uploadFile")
+    public ResultData uploadFile(MultipartFile file){
+        //上传到FastDFS上
+        try {
+            StorePath result = fastFileStorageClient.uploadFile(
+                    file.getInputStream(),
+                    file.getSize(),
+                    "amr",
+                    null
+            );
+
+            String filePath = result.getFullPath();
+            return ResultData.createSuccResultData(filePath);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return ResultData.createFailResultData(ResultCode.SERVER_ERROR, "上传失败！");
     }
 }
